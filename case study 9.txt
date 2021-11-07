@@ -1,0 +1,142 @@
+CREATE TABLE professor(
+ssn int auto_increment PRIMARY KEY,
+name varchar(20) NOT NULL,
+age varchar(3) NOT NULL,
+ranks int,
+research_speciality varchar(20)
+);
+
+
+CREATE TABLE project(
+project_no int auto_increment PRIMARY KEY,
+sponsor_name varchar(20),
+start_date DATE,
+end_date Date,
+budget int
+);
+
+
+CREATE TABLE department(
+department_no int auto_increment PRIMARY KEY,
+department_name varchar(20),
+department_office varchar(20)
+);
+
+
+CREATE TABLE student(
+ssn int auto_increment PRIMARY KEY,
+name varchar(20) NOT NULL,
+age varchar(3) NOT NULL,
+degree_programme varchar(20) NOT NULL
+);
+
+
+ALTER TABLE project
+ADD COLUMN manager int NOT NULL;
+
+
+ALTER TABLE project
+ADD FOREIGN KEY (manager) REFERENCES professor(ssn)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+
+
+
+ALTER TABLE department
+ADD COLUMN chairman int NOT NULL;
+
+
+ALTER TABLE department
+ADD FOREIGN KEY (chairman) REFERENCES professor(ssn)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+
+CREATE TABLE professor_works_department(
+professor int,
+department int,
+time int NOT NULL,
+PRIMARY KEY (professor,department),
+FOREIGN KEY (professor) REFERENCES professor(ssn)
+ON DELETE CASCADE
+ON UPDATE CASCADE,
+
+FOREIGN KEY (department) REFERENCES department(department_no)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+
+ALTER TABLE STUDENT
+ADD COLUMN department int NOT NULL;
+
+
+ALTER TABLE student
+ADD FOREIGN KEY (department) REFERENCES department(department_no)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+
+ ALTER TABLE department DROP FOREIGN KEY `department_ibfk_1`;
+
+
+
+ALTER TABLE department
+     ADD FOREIGN KEY (chairman) REFERENCES professor (ssn)
+   ON DELETE RESTRICT
+    ON UPDATE CASCADE;
+
+
+CREATE TABLE professor_works_project(
+
+id INT NOT NULL PRIMARY KEY,
+professor_id INT NOT NULL,
+project_id INT NOT NULL,
+FOREIGN KEY (professor_id) REFERENCES professor (ssn)
+ON DELETE CASCADE
+ON UPDATE CASCADE,
+FOREIGN KEY (project_id) REFERENCES project (project_no)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+
+
+CREATE TABLE student_works_project(
+
+id INT NOT NULL PRIMARY KEY,
+student_id INT NOT NULL,
+project_id INT NOT NULL,
+FOREIGN KEY (student_id) REFERENCES student (ssn)
+ON DELETE CASCADE
+ON UPDATE CASCADE,
+FOREIGN KEY (project_id) REFERENCES project (project_no)
+ON DELETE CASCADE
+ON UPDATE CASCADE
+);
+
+ALTER TABLE student
+ADD COLUMN advisor INT,
+ADD FOREIGN KEY (advisor) REFERENCES student (ssn)
+ON DELETE SET NULL
+ON UPDATE CASCADE
+
+ALTER TABLE student
+DROP FOREIGN KEY student_ibfk_1,
+ADD FOREIGN KEY (department) REFERENCES department(department_no)
+ON DELETE RESTRICT
+ON UPDATE CASCADE;
+
+ALTER TABLE professor
+DROP FOREIGN KEY professor_ibfk_1,
+ADD FOREIGN KEY (supervise) REFERENCES student(ssn)
+ON DELETE SET NULL
+ON UPDATE CASCADE;
+
+
+ALTER TABLE project
+DROP FOREIGN KEY project_ibfk_1,
+ADD FOREIGN KEY (manager) REFERENCES professor(ssn)
+ON DELETE RESTRICT
+ON UPDATE CASCADE; 		
